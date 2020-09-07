@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Autodesk.Forge;
 using Autodesk.Forge.Model;
 using forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge;
+using forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge.Extensions;
 using forgeSampleAPI_DotNetCore.Core.Configurations;
 using forgeSampleAPI_DotNetCore.Core.Encoding;
 using forgeSampleAPI_DotNetCore.Entities;
@@ -97,21 +99,28 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             string fileSavePath = await CreateAndSaveFile(file, rootPath);
             IObjectsApi objects = GeneralTokenConfigurationSettings<IObjectsApi>.SetToken(new ObjectsApi(), await _authServiceAdapter.GetSecondaryTokenTask());
 
-            dynamic uploadObj;
+            dynamic uploadObj = null;
 
-            using (StreamReader reader = new StreamReader(fileSavePath))
+            
+            long fileSize = file.fileToUpload.Length;
+            int UPLOAD_CHUNCK_SIZE = 2;
+
+            string bucketKey = file.bucketKey;
+            string fileName = Path.GetFileName(file.fileToUpload.FileName);
+
+            if (fileSize > UPLOAD_CHUNCK_SIZE * 1024 * 1024)
             {
-                uploadObj = await objects.UploadObjectAsync(file.bucketKey,
-                    Path.GetFileName(file.fileToUpload.FileName),
-                    (int) reader.BaseStream.Length,
-                    reader.BaseStream,
-                    "application/octet-stream");
+                uploadObj=await objects.UploadMoreThanChunkSizeObject(fileSize, bucketKey, fileName, fileSavePath,UPLOAD_CHUNCK_SIZE);
+            }
+            else
+            {
+                uploadObj=await objects.UploadLessChunkSizeObject(fileSavePath, bucketKey);
+                
             }
 
-            System.IO.File.Delete(fileSavePath);
+            File.Delete(fileSavePath);
 
             return uploadObj;
-
         }
 
         #region privateMethods
@@ -126,6 +135,10 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
 
             return fileSavePath;
         }
+
+       
+
+        
 
 
 
