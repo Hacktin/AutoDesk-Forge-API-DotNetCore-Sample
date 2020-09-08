@@ -23,6 +23,9 @@
                 formData.append('fileToUpload', file);
                 formData.append('bucketKey', node.id);
 
+                console.log(file);
+                console.log(formData);
+
                 $.ajax({
                     url: '/api/forge/oss/objects',
                     data: formData,
@@ -32,14 +35,17 @@
                     success: function (data) {
                         $('#appBuckets').jstree(true).refresh_node(node);
                         _this.value = '';
+                        console.log(data);
                     },
                     fail:function(e) {
                         console.log(e);
-                    }
+                    },
                 });
                 break;
         }
     });
+
+    
 });
 
 function createNewBucket() {
