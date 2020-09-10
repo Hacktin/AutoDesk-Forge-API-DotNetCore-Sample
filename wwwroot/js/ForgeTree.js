@@ -32,14 +32,38 @@
                     processData: false,
                     contentType: false,
                     type: 'POST',
+
+                    //start:function() {
+                    //    function loadingCircle() {
+                    //        $("#forgeViewer").append("<div class='modal'><!-- Place at bottom of page --></div>");
+                    //        $("#forgeViewer").addClass("loading");
+
+                    //    }
+
+                    //    loadingCircle();
+                    //},
+
+                    //stop:function() {
+                    //    $("#forgeViewer").removeClass("loading");
+                    //},
                     success: function (data) {
                         $('#appBuckets').jstree(true).refresh_node(node);
                         _this.value = '';
+                        function appendSuccess() {
+                            $("#forgeViewer").append("<div class='alert alert-success' id='alert' role='alert'>Success to uploading file</div>");
+                        }
+
+                        appendSuccess();
                         console.log(data);
                     },
-                    fail:function(e) {
-                        console.log(e);
-                    },
+                    error:function(xhr,textStatus,e) {
+                        function appendError() {
+                            $("#forgeViewer").append(`<div class="alert alert-danger" id="alert" role="alert">${e}</div>`);
+                        }
+
+                        appendError();
+
+                    }
                 });
                 break;
         }
