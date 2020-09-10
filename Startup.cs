@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
+using forgeSampleAPI_DotNetCore.Core.Extensions;
 using forgeSampleAPI_DotNetCore.Models.Mapping.AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -62,6 +63,7 @@ namespace forgeSampleAPI_DotNetCore
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.ConfigureToCustomExceptionHandlerMiddleware();
             app.UseHttpsRedirection();
             app.UseMvc();
 
