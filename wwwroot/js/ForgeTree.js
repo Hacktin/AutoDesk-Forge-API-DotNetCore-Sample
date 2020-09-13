@@ -189,9 +189,18 @@ function translateObject(node) {
     jQuery.post({
         url: '/api/forge/modelderivative/jobs',
         contentType: 'application/json',
-        data: JSON.stringify({ 'bucketKey': bucketKey, 'objectName': objectKey }),
+        data: JSON.stringify({'bucketKey': bucketKey, 'objectName': objectKey }),
         success: function (res) {
             $("#forgeViewer").html('Translation started! Please try again in a moment.');
+        },
+        error: function (xhr, textStatus, e) {
+            function appendError() {
+                var errorContent = xhr.responseJSON.errorContent;
+                $("#forgeViewer").append(`<div class="alert alert-danger" id="alert" role="alert" style="margin-top:10px;">${errorContent}</div>`);
+            }
+
+            appendError();
+
         },
     });
 }
