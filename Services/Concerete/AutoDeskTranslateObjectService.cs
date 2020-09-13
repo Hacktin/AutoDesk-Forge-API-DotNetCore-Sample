@@ -38,9 +38,11 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
         {
             JobPayload job=new JobPayload(new JobPayloadInput(translateObject.objectName),new JobPayloadOutput(outputs));
 
-            IDerivativesApi derivativesApi =
+            DerivativesApi derivativesApi =
                 GeneralTokenConfigurationSettings<IDerivativesApi>.SetToken(new DerivativesApi(),
                     await _authServiceAdapter.GetSecondaryTokenTask());
+
+
 
             dynamic jobTranslate = await derivativesApi.TranslateAsync(job);
 
