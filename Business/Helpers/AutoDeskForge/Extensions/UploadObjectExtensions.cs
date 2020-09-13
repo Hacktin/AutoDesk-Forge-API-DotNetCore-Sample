@@ -28,7 +28,7 @@ namespace forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge.Extensions
         public static async Task<dynamic> UploadMoreThanChunkSizeObject(this IObjectsApi objects, long fileSize,string bucketKey,string fileName,string filePath,int uploadChunkSize=2)
         {
             long chunkSize = uploadChunkSize * 1024 * 1024;
-            long numbersOfChunk = (long) Math.Round((double) fileSize / chunkSize) + 1;
+            long numbersOfChunk = (long) Math.Round((double)(fileSize / chunkSize)) + 1;
 
             long start = 0;
             chunkSize = (numbersOfChunk > 1 ? chunkSize : fileSize);
@@ -49,6 +49,7 @@ namespace forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge.Extensions
                     using (MemoryStream memoryStream = new MemoryStream(fileBytes))
                     {
                         reader.BaseStream.Seek((int)start, SeekOrigin.Begin);
+                        int count = reader.Read(fileBytes, 0, (int)numberOfBytes);
 
                         await memoryStream.WriteAsync(fileBytes, 0, (int)numberOfBytes);
                         memoryStream.Position = 0;
