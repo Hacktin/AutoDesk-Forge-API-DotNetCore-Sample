@@ -32,6 +32,8 @@ namespace forgeSampleAPI_DotNetCore.Controllers
             TranslateObject translateObject = _mapper.Map<TranslateObject>(objModel);
 
             return await _translateObjectServiceAdapter.TranslateObjectTask(translateObject);
+
+            
         }
     }
 }
