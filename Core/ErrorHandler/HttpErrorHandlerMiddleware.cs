@@ -48,15 +48,14 @@ namespace forgeSampleAPI_DotNetCore.Core.Middlewares
 
             }
 
-            return context.Response.WriteAsync(new Error()
+            var response = context.Response.WriteAsync(new ForgeApiErrorDetails
             {
-                error = new ForgeApiErrorDetails
-                {
-                    message = message,
-                    code = context.Response.StatusCode,
-                    errorContent = errorContent
-                }
+                errorContent = errorContent,
+                message = message,
+                code = context.Response.StatusCode
             }.ToString());
+
+            return response;
         }
     }
 }
