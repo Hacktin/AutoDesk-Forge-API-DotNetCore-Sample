@@ -10,5 +10,7 @@ namespace forgeSampleAPI_DotNetCore.Models
         public string bucketKey { get; set; }
 
         public string objectName { get; set; }
+
+        public string? RootFileName { get; set; }
     }
 }
