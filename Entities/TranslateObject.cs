@@ -9,6 +9,8 @@ namespace forgeSampleAPI_DotNetCore.Entities
     public class TranslateObject:BucketKey,ITranslateObject
     {
         public string objectName { get; set; }
+
+        public string? RootFileName { get; set; }
         
     }
 }

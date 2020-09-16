@@ -14,7 +14,8 @@ namespace forgeSampleAPI_DotNetCore.Models.Mapping.AutoMapper
             CreateMap<TranslateObjectModel, TranslateObject>();
             CreateMap<TranslateObject, TranslateObjectModel>()
                 .ForMember(t => t.bucketKey, o => o.MapFrom(t => t.bucketKey))
-                .ForMember(t => t.objectName, o => o.MapFrom(t => t.objectName));
+                .ForMember(t => t.objectName, o => o.MapFrom(t => t.objectName))
+                .ForMember(t => t.RootFileName, o => o.MapFrom(t => t.RootFileName));
         }
     }
 }
