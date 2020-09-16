@@ -186,10 +186,11 @@ function translateObject(node) {
     if (node == null) node = $('#appBuckets').jstree(true).get_selected(true)[0];
     var bucketKey = node.parents[0];
     var objectKey = node.id;
+    var RootFileName = node.text.indexOf(".zip")!==-1? node.text.replace(" 0.10.0.zip", ".iam") : null;
     jQuery.post({
         url: '/api/forge/modelderivative/jobs',
         contentType: 'application/json',
-        data: JSON.stringify({'bucketKey': bucketKey, 'objectName': objectKey }),
+        data: JSON.stringify({'bucketKey': bucketKey, 'objectName': objectKey,"RootFileName":RootFileName }),
         success: function (res) {
             $("#forgeViewer").html('Translation started! Please try again in a moment.');
         },
