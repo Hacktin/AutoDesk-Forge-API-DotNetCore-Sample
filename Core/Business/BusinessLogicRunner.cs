@@ -23,6 +23,20 @@ namespace forgeSampleAPI_DotNetCore.Core.Business
                 return t2;
             }
         }
+
+        public static dynamic RunnerStatmentOptional(bool statment, dynamic t1, dynamic t2)
+        {
+            if (statment)
+            {
+                return t1;
+            }
+            else
+            {
+                return t2;
+            }
+        }
+
+        
         
 
     }
