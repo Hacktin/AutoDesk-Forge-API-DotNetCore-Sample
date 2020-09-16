@@ -108,20 +108,14 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             string bucketKey = file.bucketKey;
             string fileName = Path.GetFileName(file.fileToUpload.FileName);
 
-            if (fileSize > UPLOAD_CHUNCK_SIZE * 1024 * 1024)
-            {
-                uploadObj=await objects.UploadMoreThanChunkSizeObject(fileSize, bucketKey, fileName, fileSavePath,UPLOAD_CHUNCK_SIZE);
-            }
-            else
-            {
-                uploadObj=await objects.UploadLessChunkSizeObject(fileSavePath, bucketKey);
-                
-            }
+            uploadObj = await UploadObjByStatment(fileSize, UPLOAD_CHUNCK_SIZE, objects, bucketKey, fileName, fileSavePath);
 
             File.Delete(fileSavePath);
 
             return uploadObj;
         }
+
+       
 
         #region privateMethods
         private async Task<string> CreateAndSaveFile(BucketUploadFile file, string rootPath)
@@ -136,9 +130,20 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             return fileSavePath;
         }
 
-       
 
-        
+        private async Task<dynamic> UploadObjByStatment(long fileSize, int UPLOAD_CHUNCK_SIZE, IObjectsApi objects, string bucketKey, string fileName, string fileSavePath)
+        {
+            if (fileSize > UPLOAD_CHUNCK_SIZE * 1024 * 1024)
+            {
+                return await objects.UploadMoreThanChunkSizeObject(fileSize, bucketKey, fileName, fileSavePath,
+                    UPLOAD_CHUNCK_SIZE);
+            }
+            else
+            {
+                return await objects.UploadLessChunkSizeObject(fileSavePath, bucketKey);
+            }
+        }
+
 
 
 
