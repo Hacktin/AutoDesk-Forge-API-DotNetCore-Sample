@@ -29,6 +29,6 @@ namespace forgeSampleAPI_DotNetCore.Services.Adapters.Concerete
             throw new NotImplementedException();
         }
 
-     
+        
     }
 }

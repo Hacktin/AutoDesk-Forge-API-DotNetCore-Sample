@@ -36,8 +36,34 @@ namespace forgeSampleAPI_DotNetCore.Core.Business
             }
         }
 
-        
-        
+        public async static Task RunnerStatmentOptionalAsync(bool statment, Task t1, Task t2)
+        {
+            if (statment)
+            {
+                await t1;
+            }
+
+            else
+            {
+                await t2;
+            }
+        }
+        public async static Task<T> RunnerStatmentOptionalAsync<T>(bool statment, Task<T> t1, Task<T> t2) where T : class
+        {
+            if (statment)
+            {
+                return await t1;
+            }
+
+            else
+            {
+                return await t2;
+            }
+        }
+
+
+
+
 
     }
 }

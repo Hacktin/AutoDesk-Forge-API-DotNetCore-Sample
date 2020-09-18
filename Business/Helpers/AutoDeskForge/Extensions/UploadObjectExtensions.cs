@@ -10,6 +10,7 @@ namespace forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge.Extensions
     public static class UploadObjectExtensions
     {
         public static dynamic uploadObj = null;
+        private static string contentDisposition = "application/octet-stream";
         public static async Task<dynamic> UploadLessChunkSizeObject(this IObjectsApi objects, string path, string bucketKey)
         {
             using (StreamReader reader = new StreamReader(path))
@@ -18,7 +19,7 @@ namespace forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge.Extensions
                     Path.GetFileName(path),
                     (int)reader.BaseStream.Length,
                     reader.BaseStream,
-                    "application/octet-stream");
+                    contentDisposition);
             }
 
 
@@ -56,7 +57,7 @@ namespace forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge.Extensions
 
 
                         uploadObj = await objects.UploadChunkAsync(bucketKey, objectKey,
-                            (int)numberOfBytes, range, sessionId, memoryStream, "application/octet-stream");
+                            (int)numberOfBytes, range, sessionId, memoryStream, contentDisposition);
 
                         start = end + 1;
                         chunkSize = ((start + chunkSize > fileSize) ? fileSize - start - 1 : chunkSize);

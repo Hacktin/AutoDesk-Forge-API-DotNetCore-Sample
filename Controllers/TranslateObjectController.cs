@@ -13,13 +13,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace forgeSampleAPI_DotNetCore.Controllers
 {
     [ApiController]
-    public class ModelDerivativeController : ControllerBase
+    public class TranslateObjectController : ControllerBase
     {
 
         private readonly ITranslateObjectServiceAdapter<TranslateObject> _translateObjectServiceAdapter;
         private IMapper _mapper;
 
-        public ModelDerivativeController(ITranslateObjectServiceAdapter<TranslateObject> translateObjectServiceAdapter,IMapper mapper )
+        public TranslateObjectController(ITranslateObjectServiceAdapter<TranslateObject> translateObjectServiceAdapter,IMapper mapper )
         {
             this._translateObjectServiceAdapter = translateObjectServiceAdapter;
             this._mapper = mapper;
@@ -37,6 +37,8 @@ namespace forgeSampleAPI_DotNetCore.Controllers
             
         }
 
-        
+     
+
+
     }
 }

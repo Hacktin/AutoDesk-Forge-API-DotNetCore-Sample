@@ -22,6 +22,11 @@ namespace forgeSampleAPI_DotNetCore.Business.Ioc.Autofac
             builder.RegisterType<AutoDeskTranslateObjectService>().As<ITranslateObjectService<TranslateObject>>();
             builder.RegisterType<TranslateObjectServiceAdapter<TranslateObject>>()
                 .As<ITranslateObjectServiceAdapter<TranslateObject>>();
+
+
+            builder.RegisterType<AutoDeskModelDetailsService>().As<IModelDetailServices<ModelDetails>>();
+            builder.RegisterType<ModelDetailsServiceAdapter<ModelDetails>>()
+                .As<IModelDetailServicesAdapter<ModelDetails>>();
         }
     }
 }

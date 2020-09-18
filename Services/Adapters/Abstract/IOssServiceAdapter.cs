@@ -17,6 +17,8 @@ namespace forgeSampleAPI_DotNetCore.Services.Adapters.Abstract
 
         Task<dynamic> CreateTask(K key);
 
+        Task<dynamic> GetObjects(string bucketKey);
+
 
 
         IList<T> GetNodes(string id);

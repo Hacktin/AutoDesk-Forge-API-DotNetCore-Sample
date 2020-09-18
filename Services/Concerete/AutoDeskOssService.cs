@@ -9,6 +9,7 @@ using Autodesk.Forge;
 using Autodesk.Forge.Model;
 using forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge;
 using forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge.Extensions;
+using forgeSampleAPI_DotNetCore.Core.Business;
 using forgeSampleAPI_DotNetCore.Core.Configurations;
 using forgeSampleAPI_DotNetCore.Core.Encoding;
 using forgeSampleAPI_DotNetCore.Entities;
@@ -49,6 +50,14 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             return result;
         }
 
+        public async Task<dynamic> GetObjects(string bucketKey)
+        {
+            IObjectsApi api= GeneralTokenConfigurationSettings<IObjectsApi>.SetToken(new ObjectsApi(),
+                await _authServiceAdapter.GetSecondaryTokenTask());
+
+            return await api.GetObjectsAsync(bucketKey);
+        }
+
         public IList<TreeNode> GetOss(string id)
         {
             throw new NotImplementedException();
@@ -58,36 +67,14 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
         {
             string ClientId = AppSettings.GetAppSetting("FORGE_CLIENT_ID").ToLower();
 
-            if (id == "#")
-            {
-                IBucketsApi bucketsApi =
-                    GeneralTokenConfigurationSettings<IBucketsApi>.SetToken(new BucketsApi(),
-                        await _authServiceAdapter.GetSecondaryTokenTask());
-                dynamic buckets = await bucketsApi.GetBucketsAsync("US", 100);
+            await BusinessLogicRunner.RunnerStatmentOptionalAsync((id == "#"), AddBucketsToNode(ClientId),
+                AddObjectsToNode(id));
 
-                foreach (KeyValuePair<string, dynamic> bucket in new DynamicDictionaryItems(buckets.items))
-                {
-                    nodes.Add(new TreeNode(bucket.Value.bucketKey, bucket.Value.bucketKey.Replace(ClientId + "-", string.Empty), "bucket", true));
-                }
-
-                
-            }
-            else
-            {
-                IObjectsApi objectsApi =
-                    GeneralTokenConfigurationSettings<IObjectsApi>.SetToken(new ObjectsApi(),
-                        await _authServiceAdapter.GetSecondaryTokenTask());
-                var objectList = objectsApi.GetObjects(id);
-                foreach (KeyValuePair<string, dynamic> objInfo in new DynamicDictionaryItems(objectList.items))
-                {
-                    nodes.Add(new TreeNode(Base64Encoding.Encode((string)objInfo.Value.objectId),
-                        objInfo.Value.objectKey, "object", false));
-                }
-            }
 
             return nodes;
 
         }
+
 
         public dynamic UploadObject(BucketUploadFile file,string rootPath)
         {
@@ -141,6 +128,33 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             else
             {
                 return await objects.UploadLessChunkSizeObject(fileSavePath, bucketKey);
+            }
+        }
+
+        private async Task AddObjectsToNode(string id)
+        {
+            IObjectsApi objectsApi =
+                GeneralTokenConfigurationSettings<IObjectsApi>.SetToken(new ObjectsApi(),
+                    await _authServiceAdapter.GetSecondaryTokenTask());
+            var objectList = objectsApi.GetObjects(id);
+            foreach (KeyValuePair<string, dynamic> objInfo in new DynamicDictionaryItems(objectList.items))
+            {
+                nodes.Add(new TreeNode(Base64Encoding.Encode((string)objInfo.Value.objectId),
+                    objInfo.Value.objectKey, "object", false));
+            }
+        }
+
+        private async Task AddBucketsToNode(string ClientId)
+        {
+            IBucketsApi bucketsApi =
+                GeneralTokenConfigurationSettings<IBucketsApi>.SetToken(new BucketsApi(),
+                    await _authServiceAdapter.GetSecondaryTokenTask());
+            dynamic buckets = await bucketsApi.GetBucketsAsync("US", 100);
+
+            foreach (KeyValuePair<string, dynamic> bucket in new DynamicDictionaryItems(buckets.items))
+            {
+                nodes.Add(new TreeNode(bucket.Value.bucketKey, bucket.Value.bucketKey.Replace(ClientId + "-", string.Empty),
+                    "bucket", true));
             }
         }
 

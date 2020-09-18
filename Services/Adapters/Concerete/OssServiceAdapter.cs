@@ -15,7 +15,6 @@ namespace forgeSampleAPI_DotNetCore.Services.Adapters.Concerete
     where U : class, IUploadFile
     where K : class, IKey
     {
-
         private readonly IOssService<T, U, K> _ossService;
 
         public OssServiceAdapter(IOssService<T, U, K> ossService)
@@ -54,6 +53,9 @@ namespace forgeSampleAPI_DotNetCore.Services.Adapters.Concerete
             throw new NotImplementedException();
         }
 
-      
+        public async Task<dynamic> GetObjects(string bucketKey)
+        {
+            return await _ossService.GetObjects(bucketKey);
+        }
     }
 }

@@ -57,5 +57,7 @@ namespace forgeSampleAPI_DotNetCore.Controllers
             BucketUploadFile uploadFile = mapper.Map<BucketUploadFile>(uploadFileModel);
             return await _ossServiceAdapter.UploadTask(uploadFile, _env.WebRootPath);
         }
+
+       
     }
 }

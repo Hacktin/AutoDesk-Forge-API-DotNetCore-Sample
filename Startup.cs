@@ -33,6 +33,7 @@ namespace forgeSampleAPI_DotNetCore
                 mc.AddProfile(new CreateBucketMapping());
                 mc.AddProfile(new UploadFileMapping());
                 mc.AddProfile(new TranslateObjectMapping());
+                mc.AddProfile(new ModelDetailsMapping());
             });
 
             IMapper mapper = mappingConfig.CreateMapper();

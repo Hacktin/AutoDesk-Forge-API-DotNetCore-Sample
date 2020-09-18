@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using forgeSampleAPI_DotNetCore.Entities;
 using forgeSampleAPI_DotNetCore.Entities.Abstract;
@@ -20,6 +21,8 @@ namespace forgeSampleAPI_DotNetCore.Services.Abstract
         dynamic Create(K key);
 
         Task<dynamic> UploadObjectTask(U file,string rootPath);
+
+        Task<dynamic> GetObjects(string bucketKey);
 
         dynamic UploadObject(U file,string rootPath);
     }

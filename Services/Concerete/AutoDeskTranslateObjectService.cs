@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +8,8 @@ using Autodesk.Forge;
 using Autodesk.Forge.Model;
 using forgeSampleAPI_DotNetCore.Business.Helpers.AutoDeskForge;
 using forgeSampleAPI_DotNetCore.Core.Business;
+using forgeSampleAPI_DotNetCore.Core.Configurations;
+using forgeSampleAPI_DotNetCore.Core.Encoding;
 using forgeSampleAPI_DotNetCore.Entities;
 using forgeSampleAPI_DotNetCore.Services.Abstract;
 using forgeSampleAPI_DotNetCore.Services.Adapters.Abstract;
@@ -37,7 +40,8 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
         {
             throw new NotImplementedException();
         }
-        
+
+
 
         public async Task<dynamic> TranslateTask(TranslateObject translateObject)
         {

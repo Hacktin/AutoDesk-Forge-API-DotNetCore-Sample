@@ -31,6 +31,11 @@ namespace forgeSampleAPI_DotNetCore.Core.Middlewares
                 await HandleForgeAPIExceptionAsync(context, e);
             }
 
+            catch (Exception e)
+            {
+                await HandleOtherExceptionAsync(context, e);
+            }
+
 
         }
 
@@ -51,6 +56,27 @@ namespace forgeSampleAPI_DotNetCore.Core.Middlewares
             var response = context.Response.WriteAsync(new ForgeApiErrorDetails
             {
                 errorContent = errorContent,
+                message = message,
+                code = context.Response.StatusCode
+            }.ToString());
+
+            return response;
+        }
+
+        private Task HandleOtherExceptionAsync(HttpContext context, Exception e)
+        {
+            context.Response.ContentType = "application/json";
+            string message = "";
+
+            if (e.GetType() == typeof(Exception))
+            {
+                context.Response.StatusCode = 500;
+                message = e.Message;
+
+            }
+
+            var response = context.Response.WriteAsync(new ErrorDetails()
+            {
                 message = message,
                 code = context.Response.StatusCode
             }.ToString());

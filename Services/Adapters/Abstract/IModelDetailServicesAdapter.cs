@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autodesk.Forge.Model;
 using forgeSampleAPI_DotNetCore.Entities.Abstract;
 
 namespace forgeSampleAPI_DotNetCore.Services.Adapters.Abstract
 {
-    public interface ITranslateObjectServiceAdapter<T> where T:class,ITranslateObject
+    public interface IModelDetailServicesAdapter<M> where M:class,IModelDetails
     {
+        Task<dynamic> GetModelDetailPropertiesAsync(M modelDetails);
 
-        Task<dynamic> TranslateObjectTask(T translateObject);
-
-        dynamic TranslateObject(T translateObject);
+        dynamic GetModelDetailProperties(M modelDetails);
     }
 }
