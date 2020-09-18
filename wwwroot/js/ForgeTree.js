@@ -17,14 +17,12 @@
         var _this = this;
         if (_this.files.length == 0) return;
         var file = _this.files[0];
+        console.log(file);
         switch (node.type) {
             case 'bucket':
                 var formData = new FormData();
                 formData.append('fileToUpload', file);
                 formData.append('bucketKey', node.id);
-
-                console.log(file);
-                console.log(formData);
 
                 $.ajax({
                     url: '/api/forge/oss/objects',
@@ -33,19 +31,6 @@
                     contentType: false,
                     type: 'POST',
 
-                    //start:function() {
-                    //    function loadingCircle() {
-                    //        $("#forgeViewer").append("<div class='modal'><!-- Place at bottom of page --></div>");
-                    //        $("#forgeViewer").addClass("loading");
-
-                    //    }
-
-                    //    loadingCircle();
-                    //},
-
-                    //stop:function() {
-                    //    $("#forgeViewer").removeClass("loading");
-                    //},
                     success: function (data) {
                         $('#appBuckets').jstree(true).refresh_node(node);
                         _this.value = '';
@@ -54,7 +39,6 @@
                         }
 
                         appendSuccess();
-                        console.log(data);
                     },
                     error:function(xhr,textStatus,e) {
                         function appendError() {
@@ -81,6 +65,7 @@ function createNewBucket() {
         success: function (res) {
             $('#appBuckets').jstree(true).refresh();
             $('#createBucketModal').modal('toggle');
+            console.log(res);
         },
         error: function (err) {
             if (err.status == 409)
@@ -185,13 +170,14 @@ function translateObject(node) {
     $("#forgeViewer").empty();
     if (node == null) node = $('#appBuckets').jstree(true).get_selected(true)[0];
     var bucketKey = node.parents[0];
-    var objectKey = node.id;
+    var objectKey = node.id; //urn info
     var RootFileName = node.text.indexOf(".zip")!==-1? node.text.replace(" 0.10.0.zip", ".iam") : null;
     jQuery.post({
         url: '/api/forge/modelderivative/jobs',
         contentType: 'application/json',
         data: JSON.stringify({'bucketKey': bucketKey, 'objectName': objectKey,"RootFileName":RootFileName }),
         success: function (res) {
+            console.log(res)
             $("#forgeViewer").html('Translation started! Please try again in a moment.');
         },
         error: function (xhr, textStatus, e) {
