@@ -1,5 +1,7 @@
 ﻿using System;
 using Autofac;
+using forgeSampleAPI_DotNetCore.Caching.Redis;
+using forgeSampleAPI_DotNetCore.Core.CrossCuttingCornces.Caching;
 using forgeSampleAPI_DotNetCore.Entities;
 using forgeSampleAPI_DotNetCore.Services.Abstract;
 using forgeSampleAPI_DotNetCore.Services.Adapters.Abstract;
@@ -24,9 +26,14 @@ namespace forgeSampleAPI_DotNetCore.Business.Ioc.Autofac
                 .As<ITranslateObjectServiceAdapter<TranslateObject>>();
 
 
+            builder.RegisterType<RedisCacheManager>().As<ICacheManager>().SingleInstance();
+            builder.RegisterType<RedisServer>().SingleInstance();
+
             builder.RegisterType<AutoDeskModelDetailsService>().As<IModelDetailServices<ModelDetails>>();
             builder.RegisterType<ModelDetailsServiceAdapter<ModelDetails>>()
                 .As<IModelDetailServicesAdapter<ModelDetails>>();
+
+          
         }
     }
 }
