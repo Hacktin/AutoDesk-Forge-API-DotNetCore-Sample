@@ -9,5 +9,9 @@ namespace forgeSampleAPI_DotNetCore.Entities
     public class ModelDetails:IModelDetails
     {
         public string urn { get; set; }
+
+        public string? name { get; set;}
+
+        public string? pattern { get; set; }
     }
 }

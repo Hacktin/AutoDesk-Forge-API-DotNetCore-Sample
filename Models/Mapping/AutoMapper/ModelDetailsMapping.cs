@@ -13,7 +13,9 @@ namespace forgeSampleAPI_DotNetCore.Models.Mapping.AutoMapper
         {
             CreateMap<ModelDetailsModel, ModelDetails>();
             CreateMap<ModelDetails, ModelDetailsModel>()
-                .ForMember(m => m.urn, o => o.MapFrom(m => m.urn));
+                .ForMember(m => m.urn, o => o.MapFrom(m => m.urn))
+                .ForMember(m => m.name, o => o.MapFrom(m => m.name))
+                .ForMember(m => m.pattern, o => o.MapFrom(m => m.pattern));
         }
     }
 }
