@@ -8,8 +8,13 @@ namespace forgeSampleAPI_DotNetCore.Services.Adapters.Abstract
 {
     public interface IModelDetailServicesAdapter<M> where M:class,IModelDetails
     {
+        Task<dynamic> GetModelDetailMetaDataAsync(M modelDetails);
         Task<dynamic> GetModelDetailPropertiesAsync(M modelDetails);
 
         dynamic GetModelDetailProperties(M modelDetails);
+
+        Task<dynamic> GetModelDetailPropertiesAsyncByName(M modelDetails);
+
+        Task<dynamic> GetModelDetailPropertiesAsyncByNamePattern(M modelDetails);
     }
 }

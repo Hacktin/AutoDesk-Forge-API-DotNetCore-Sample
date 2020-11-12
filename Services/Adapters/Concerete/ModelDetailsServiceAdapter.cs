@@ -16,6 +16,12 @@ namespace forgeSampleAPI_DotNetCore.Services.Adapters.Concerete
         {
             this._modelDetailServices = modelDetailServices;
         }
+
+        public async Task<dynamic> GetModelDetailMetaDataAsync(M modelDetails)
+        {
+            return await _modelDetailServices.GetModelDetailMetaDataAsync(modelDetails);
+        }
+
         public dynamic GetModelDetailProperties(M modelDetails)
         {
             throw new NotImplementedException();
@@ -24,6 +30,16 @@ namespace forgeSampleAPI_DotNetCore.Services.Adapters.Concerete
         public async Task<dynamic> GetModelDetailPropertiesAsync(M modelDetails)
         {
             return await _modelDetailServices.GetModelDetailPropertiesAsync(modelDetails);
+        }
+
+        public async Task<dynamic> GetModelDetailPropertiesAsyncByName(M modelDetails)
+        {
+            return await _modelDetailServices.GetModelDetailPropertiesAsyncByName(modelDetails);
+        }
+
+        public async Task<dynamic> GetModelDetailPropertiesAsyncByNamePattern(M modelDetails)
+        {
+            return await _modelDetailServices.GetModelDetailPropertiesAsyncByNamePattern(modelDetails);
         }
     }
 }

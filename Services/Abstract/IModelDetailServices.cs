@@ -10,6 +10,12 @@ namespace forgeSampleAPI_DotNetCore.Services.Abstract
     {
         Task<dynamic> GetModelDetailPropertiesAsync(M modelDetails);
 
+        Task<dynamic> GetModelDetailPropertiesAsyncByName(M modelDetails);
+
+        Task<dynamic> GetModelDetailPropertiesAsyncByNamePattern(M modelDetails);
+
+        Task<dynamic> GetModelDetailMetaDataAsync(M modelDetails);
+
         dynamic GetModelDetailProperties(M modelDetails);
     }
 }
