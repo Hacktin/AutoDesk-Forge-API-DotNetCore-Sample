@@ -67,8 +67,15 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
         {
             string ClientId = AppSettings.GetAppSetting("FORGE_CLIENT_ID").ToLower();
 
-            await BusinessLogicRunner.RunnerStatmentOptionalAsync((id == "#"), AddBucketsToNode(ClientId),
-                AddObjectsToNode(id));
+            if (id == "#")
+            {
+                await AddBucketsToNode(ClientId);
+            }
+
+            else
+            {
+                await AddObjectsToNode(id);
+            }
 
 
             return nodes;
@@ -99,7 +106,11 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
 
             File.Delete(fileSavePath);
 
-            return uploadObj;
+            return new
+            {
+                uploadObject=uploadObj,
+                token=objects.Configuration.AccessToken
+            };
         }
 
        

@@ -27,11 +27,45 @@ namespace forgeSampleAPI_DotNetCore.Controllers
 
         [HttpPost]
         [Route("api/forge/model/properties")]
-        public async Task<dynamic> TranslateObject([FromBody] ModelDetailsModel modelDetailsModel )
+        public async Task<dynamic> GetProperties([FromBody] ModelDetailsModel modelDetailsModel )
         {
             ModelDetails modelDetails = _mapper.Map<ModelDetails>(modelDetailsModel);
 
             return await _modelDetailServicesAdapter.GetModelDetailPropertiesAsync(modelDetails);
+
+
+        }
+
+        [HttpPost]
+        [Route("api/forge/model/properties/pattern")]
+        public async Task<dynamic> GetPropertiesByPattern([FromBody] ModelDetailsModel modelDetailsModel)
+        {
+            ModelDetails modelDetails = _mapper.Map<ModelDetails>(modelDetailsModel);
+
+            return await _modelDetailServicesAdapter.GetModelDetailPropertiesAsyncByNamePattern(modelDetails);
+
+
+        }
+
+        [HttpPost]
+        [Route("api/forge/model/property")]
+        public async Task<dynamic> GetProperty([FromBody] ModelDetailsModel modelDetailsModel)
+        {
+            ModelDetails modelDetails = _mapper.Map<ModelDetails>(modelDetailsModel);
+
+            return await _modelDetailServicesAdapter.GetModelDetailPropertiesAsyncByName(modelDetails);
+
+
+        }
+
+        [HttpPost]
+        [Route("api/forge/model/metadata")]
+        public async Task<dynamic> GetMetaData([FromBody] ModelDetailsModel modelDetailsModel)
+        {
+            ModelDetails modelDetails = _mapper.Map<ModelDetails>(modelDetailsModel);
+
+            return await _modelDetailServicesAdapter.GetModelDetailMetaDataAsync(modelDetails);
+
 
 
         }
