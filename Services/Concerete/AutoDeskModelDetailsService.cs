@@ -21,7 +21,7 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
         private readonly IAuthServiceAdapter _authServiceAdapter;
         private readonly ICacheManager _cacheManager;
 
-        public AutoDeskModelDetailsService(IAuthServiceAdapter authServiceAdapter,ICacheManager cacheManager)
+        public AutoDeskModelDetailsService(IAuthServiceAdapter authServiceAdapter, ICacheManager cacheManager)
         {
             this._authServiceAdapter = authServiceAdapter;
             this._cacheManager = cacheManager;
@@ -35,40 +35,65 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
         public async Task<dynamic> GetModelDetailMetaDataAsync(ModelDetails modelDetails)
         {
 
-            DerivativesApi derivativesApi =
+            string key = "metadata";
+
+            if (_cacheManager.IsAdd(key))
+            {
+                return _cacheManager.Get<dynamic>(key);
+            }
+
+            else
+            {
+                DerivativesApi derivativesApi =
                GeneralTokenConfigurationSettings<IDerivativesApi>.SetToken(new DerivativesApi(),
                    await _authServiceAdapter.GetSecondaryTokenTask());
 
-            dynamic detail = await GetModelDetailGuid(derivativesApi, modelDetails.urn);
+                dynamic detail = await GetModelDetailGuid(derivativesApi, modelDetails.urn);
 
-            dynamic metadata = detail.data.metadata;
+                dynamic metadata = detail.data.metadata;
 
-            List<dynamic> results = new List<dynamic>();
+                List<dynamic> results = new List<dynamic>();
 
 
-            foreach (KeyValuePair<string, dynamic> m in new DynamicDictionaryItems(metadata))
-            {
+                foreach (KeyValuePair<string, dynamic> m in new DynamicDictionaryItems(metadata))
+                {
 
-                results.Add(await derivativesApi.GetModelviewPropertiesAsync(modelDetails.urn, m.Value.guid));
+                    results.Add(await derivativesApi.GetModelviewPropertiesAsync(modelDetails.urn, m.Value.guid));
+                }
+
+                _cacheManager.Add(key, results, 60);
+
+
+                return results;
             }
 
 
-            return results;
         }
 
-      
+
 
 
 
         public async Task<dynamic> GetModelDetailPropertiesAsync(ModelDetails modelDetails)
         {
 
-               List<dynamic> results = new List<dynamic>();
+            List<dynamic> results = new List<dynamic>();
 
-            
+            string key = "properties";
+
+            if (_cacheManager.IsAdd(key))
+            {
+                return _cacheManager.Get<dynamic>(key);
+            }
+
+
+
+            else
+            {
+
                 DerivativesApi derivativesApi =
-                GeneralTokenConfigurationSettings<IDerivativesApi>.SetToken(new DerivativesApi(),
-                    await _authServiceAdapter.GetSecondaryTokenTask());
+                    GeneralTokenConfigurationSettings<IDerivativesApi>.SetToken(new DerivativesApi(),
+                        await _authServiceAdapter.GetSecondaryTokenTask());
 
                 dynamic detail = await GetModelDetailGuid(derivativesApi, modelDetails.urn);
 
@@ -94,59 +119,104 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
                     results.Add(c.Value);
                 }
 
+                _cacheManager.Add(key, results, 60);
+
                 return results;
-            
-                
+            }
+
+
+
+
         }
 
         public async Task<dynamic> GetModelDetailPropertiesAsyncByName(ModelDetails modelDetails)
         {
             dynamic arrayResult = await GetModelDetailPropertiesAsync(modelDetails);
 
-            string key = modelDetails.name + "-name";
+            string key = modelDetails.name;
 
             dynamic selectedResult = null;
 
-      
-           
-                foreach (KeyValuePair<string, dynamic> a in new DynamicDictionaryItems(arrayResult))
+            if (_cacheManager.IsAdd(key))
+            {
+                return _cacheManager.Get<dynamic>(key);
+            }
+
+
+            else
+            {
+
+                foreach (dynamic a in arrayResult)
                 {
-                    if (a.Value.name == modelDetails.name)
+                    if (a.name == modelDetails.name)
                     {
-                        selectedResult = a.Value;
+                        selectedResult = a;
                         break;
                     }
                 }
 
+                _cacheManager.Add(key, selectedResult, 60);
+
                 return selectedResult;
-         
-         
+            }
+
+
+
+
+
+
         }
 
         public async Task<dynamic> GetModelDetailPropertiesAsyncByNamePattern(ModelDetails modelDetails)
         {
-            dynamic arrayResult = await GetModelDetailPropertiesAsync(modelDetails);
+
 
             List<dynamic> selectedResults = new List<dynamic>();
 
             string propertiesPattern = $"{modelDetails.pattern}.*([A-aZ-z][1-9])*";
 
+            if (_cacheManager.IsAdd(propertiesPattern))
+            {
+                return _cacheManager.Get<dynamic>(propertiesPattern);
+            }
 
-           
+
+            else
+            {
+
+                dynamic arrayResult = await GetModelDetailPropertiesAsync(modelDetails);
                 Regex regex = new Regex(propertiesPattern);
+
+                bool result = _cacheManager.IsAdd("properties");
+
 
                 foreach (dynamic a in arrayResult)
                 {
-                    if (regex.IsMatch(a.name))
+
+                    if (result)
                     {
-                        selectedResults.Add(a);
+                        ListToProperties(selectedResults, regex, a, a.name.Value);
+                    }
+
+                    else
+                    {
+                        ListToProperties(selectedResults, regex, a, a.name);
                     }
                 }
 
-                return selectedResults;
-            
-           
+            }
+
+
+
+
+            _cacheManager.Add(propertiesPattern, selectedResults, 60);
+
+            return selectedResults;
         }
+
+
+
+
 
 
 
@@ -157,6 +227,16 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             return await api.GetMetadataAsync(urn);
         }
 
+        private void ListToProperties(dynamic results, Regex regex, dynamic val, dynamic valProperty)
+        {
+            if (regex.IsMatch(valProperty))
+            {
+                results.Add(val);
+            }
+        }
+
+
         #endregion
+       }
     }
-}
+
