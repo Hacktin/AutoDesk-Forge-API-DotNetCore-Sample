@@ -19,12 +19,12 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
     public class AutoDeskModelDetailsService : IModelDetailServices<ModelDetails>
     {
         private readonly IAuthServiceAdapter _authServiceAdapter;
-       // private readonly ICacheManager _cacheManager;
+        private readonly ICacheManager _cacheManager;
 
-        public AutoDeskModelDetailsService(IAuthServiceAdapter authServiceAdapter)
+        public AutoDeskModelDetailsService(IAuthServiceAdapter authServiceAdapter,ICacheManager cacheManager)
         {
             this._authServiceAdapter = authServiceAdapter;
-           // this._cacheManager = cacheManager;
+            this._cacheManager = cacheManager;
         }
 
         public dynamic GetModelDetailProperties(ModelDetails modelDetails)
