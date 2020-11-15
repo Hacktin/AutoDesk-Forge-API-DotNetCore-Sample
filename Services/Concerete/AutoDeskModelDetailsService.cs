@@ -13,6 +13,8 @@ using forgeSampleAPI_DotNetCore.Entities;
 using forgeSampleAPI_DotNetCore.Services.Abstract;
 using forgeSampleAPI_DotNetCore.Services.Adapters.Abstract;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace forgeSampleAPI_DotNetCore.Services.Concerete
 {
@@ -52,13 +54,15 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
 
                 dynamic metadata = detail.data.metadata;
 
+
                 List<dynamic> results = new List<dynamic>();
 
 
                 foreach (KeyValuePair<string, dynamic> m in new DynamicDictionaryItems(metadata))
                 {
+                    var value = m.Value;
 
-                    results.Add(await derivativesApi.GetModelviewPropertiesAsync(modelDetails.urn, m.Value.guid));
+                    results.Add(await derivativesApi.GetModelviewPropertiesAsync(modelDetails.urn, value.guid));
                 }
 
                 _cacheManager.Add(key, results, 60);
@@ -100,24 +104,23 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
                 dynamic metadata = detail.data.metadata;
 
 
-                dynamic r = null;
-
 
                 foreach (KeyValuePair<string, dynamic> m in new DynamicDictionaryItems(metadata))
                 {
-                    r = await derivativesApi.GetModelviewPropertiesAsync(modelDetails.urn, m.Value.guid);
+                    dynamic list = await derivativesApi.GetModelviewPropertiesAsync(modelDetails.urn, m.Value.guid);
 
-                    break;
+                    dynamic collection = list.data.collection;
+
+                   DynamicDictionaryItems items = new DynamicDictionaryItems(collection);
+                    
+                   foreach(dynamic c in items)
+                   {
+                        results.Add(c.Value);
+                   }                
 
                 }
 
-                dynamic collection = r.data.collection;
-
-
-                foreach (KeyValuePair<string, dynamic> c in new DynamicDictionaryItems(collection))
-                {
-                    results.Add(c.Value);
-                }
+                _cacheManager.Add(key, results, 60);
 
                 return results;
             }
@@ -153,7 +156,7 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
                     }
                 }
 
-                AddToCache(arrayResult, selectedResult, key);
+                _cacheManager.Add(key, selectedResult, 60);
 
                 return selectedResult;
             }
@@ -186,14 +189,13 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
 
                 Regex regex = new Regex(propertiesPattern);
 
-                bool result = _cacheManager.IsAdd("properties");
 
 
                 foreach (dynamic a in arrayResult)
                 {
                     
 
-                    if (result)
+                    if (arrayResult is JArray)
                     {
                         ListToProperties(selectedResults, regex, a, a.name.Value);
                     }
@@ -205,7 +207,7 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
                     }
                 }
 
-                AddToCache(arrayResult, selectedResults, propertiesPattern);
+                _cacheManager.Add(propertiesPattern, selectedResults, 60);
             }
 
 
@@ -231,12 +233,6 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             {
                 results.Add(val);
             }
-        }
-
-        private void AddToCache(dynamic arrayResult,dynamic selectedResults,string selectedKey)
-        {
-            _cacheManager.Add("properties", arrayResult, 60);
-            _cacheManager.Add(selectedKey, selectedResults, 60);
         }
 
 

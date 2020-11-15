@@ -30,7 +30,8 @@ namespace forgeSampleAPI_DotNetCore.Caching.Redis
         {
           
             string jsonData = _redisServer.Database.StringGet(key);
-            return JsonConvert.DeserializeObject<T>(jsonData);
+            var result= JsonConvert.DeserializeObject<T>(jsonData);
+            return result;
            
         }
 
