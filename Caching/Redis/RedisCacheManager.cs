@@ -18,9 +18,13 @@ namespace forgeSampleAPI_DotNetCore.Caching.Redis
         }
         public void Add(string key, object data, int duration)
         {
-            string jsonData = JsonConvert.SerializeObject(data);
-            _redisServer.Database.StringSet(key, jsonData, TimeSpan.FromMinutes(duration));
+            if (!IsAdd(key))
+            {
+                string jsonData = JsonConvert.SerializeObject(data);
+                _redisServer.Database.StringSet(key, jsonData, TimeSpan.FromMinutes(duration));
+            }
         }
+
 
         public T Get<T>(string key)
         {
@@ -52,7 +56,8 @@ namespace forgeSampleAPI_DotNetCore.Caching.Redis
 
         public bool IsAdd(string key)
         {
-            return _redisServer.Database.KeyExists(key);
+           var result= _redisServer.Database.KeyExists(key);
+           return result;
         }
 
         public void Remove(string key)

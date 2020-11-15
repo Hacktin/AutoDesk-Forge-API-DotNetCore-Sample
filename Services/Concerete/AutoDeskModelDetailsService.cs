@@ -119,8 +119,6 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
                     results.Add(c.Value);
                 }
 
-                _cacheManager.Add(key, results, 60);
-
                 return results;
             }
 
@@ -155,7 +153,7 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
                     }
                 }
 
-                _cacheManager.Add(key, selectedResult, 60);
+                AddToCache(arrayResult, selectedResult, key);
 
                 return selectedResult;
             }
@@ -185,6 +183,7 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             {
 
                 dynamic arrayResult = await GetModelDetailPropertiesAsync(modelDetails);
+
                 Regex regex = new Regex(propertiesPattern);
 
                 bool result = _cacheManager.IsAdd("properties");
@@ -192,6 +191,7 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
 
                 foreach (dynamic a in arrayResult)
                 {
+                    
 
                     if (result)
                     {
@@ -201,15 +201,13 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
                     else
                     {
                         ListToProperties(selectedResults, regex, a, a.name);
+                       
                     }
                 }
 
+                AddToCache(arrayResult, selectedResults, propertiesPattern);
             }
 
-
-
-
-            _cacheManager.Add(propertiesPattern, selectedResults, 60);
 
             return selectedResults;
         }
@@ -233,6 +231,12 @@ namespace forgeSampleAPI_DotNetCore.Services.Concerete
             {
                 results.Add(val);
             }
+        }
+
+        private void AddToCache(dynamic arrayResult,dynamic selectedResults,string selectedKey)
+        {
+            _cacheManager.Add("properties", arrayResult, 60);
+            _cacheManager.Add(selectedKey, selectedResults, 60);
         }
 
 
